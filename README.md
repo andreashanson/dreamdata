@@ -1,2 +1,1 @@
-# dreamdata
-Dreamdata code-challenge
+curl -i -X POST localhost:8000/mail/send -d '{"subject": "Brännö?", "from": "andreas.olof.hansson@gmail.com", "content": "Hej blir det någon brännö i helgen tro?", "to": "andreas.lindeblad@gmail.com", "fromname": "Andreas Hansson"}' -H "Content-Type: application/json"
