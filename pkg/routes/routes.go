@@ -8,9 +8,11 @@ import (
 )
 
 func GetRoutes() http.Handler {
+
 	r := chi.NewRouter()
 	r.Post("/mail/send", http.HandlerFunc(handlers.SendMailHandler))
 	r.Get("/mail", http.HandlerFunc(handlers.TestHandler))
+	r.Get("/*", handlers.ServeReactApp)
 
 	return r
 }
