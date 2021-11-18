@@ -1,4 +1,4 @@
-package primary
+package mailjet
 
 type Email struct {
 	FromName string `json:"from_name"`

@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"os"
 
-	primary "github.com/andreashanson/dreamdata/pkg/primary_mail"
+	primary "github.com/andreashanson/dreamdata/pkg/mailjet"
 )
 
 func SendMailHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:80")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var e primary.Email
@@ -20,18 +21,14 @@ func SendMailHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 	}
 
-	fmt.Println(e)
-
 	em := primary.NewService()
-	res, err := em.Send(e)
+	_, err = em.Send(e)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(500)
 	}
-	fmt.Println(res)
 	json.NewEncoder(w).Encode(&e)
 
-	//w.WriteHeader(200)
 }
 
 func ServeReactApp(w http.ResponseWriter, r *http.Request) {
@@ -41,8 +38,4 @@ func ServeReactApp(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fs.ServeHTTP(w, r)
 	}
-}
-
-func TestHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Testing handlers")
 }
