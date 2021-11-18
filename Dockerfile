@@ -1,7 +1,5 @@
 # Build go binary
 FROM golang:1.17.1 AS builder
-ARG GIT_TAG="test"
-ARG GIT_BRANCH="test"
 ENV GO111MODULE=on
 
 RUN groupadd -g 10000 app && useradd -m -u 10001 -g app app
