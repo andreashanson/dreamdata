@@ -1,6 +1,8 @@
 package mailjet
 
 import (
+	"fmt"
+
 	"github.com/andreashanson/dreamdata/pkg/config"
 	"github.com/andreashanson/dreamdata/pkg/mail"
 	"github.com/mailjet/mailjet-apiv3-go"
@@ -11,7 +13,11 @@ type MailRepository struct {
 }
 
 func NewMailRepo(c *config.MailjetConfig) *MailRepository {
-	client := mailjet.NewMailjetClient(c.Key1, c.Key2)
+	key1 := c.Key1
+	key2 := c.Key2
+	fmt.Println(key1)
+	fmt.Println(key2)
+	client := mailjet.NewMailjetClient(key1, key2)
 	return &MailRepository{
 		Client: client,
 	}
