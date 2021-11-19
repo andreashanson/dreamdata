@@ -15,14 +15,14 @@ COPY pkg ./pkg
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix nocgo -o dreamdata cmd/*.go
 
 # Build react app
-FROM node:13.12.0-alpine as build
+FROM node:10 as build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY frontend/package.json ./
 COPY frontend/package-lock.json ./
 COPY frontend ./
-RUN npm ci --silent
-RUN npm install react-scripts@3.4.1 -g --silent
+RUN npm install --silent
+RUN npm install react-scripts@4.0.1 -g --silent
 COPY . ./
 RUN npm run build
 

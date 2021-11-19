@@ -16,15 +16,12 @@ type SendingblueRepository struct {
 }
 
 func NewSendinBlueRepo(c *config.SMTPConfig) *SendingblueRepository {
-	//host := c.SMTPHost
-	//user := c.SMTPUser
-	//pw := c.SMTPPassword
-	host := "smtp-relay.sendinblue.com"
-	user := "andreas.olof.hansson@gmail.com"
-	pw := "shYZSJ5mp1cLg4n2"
-	fmt.Println(host)
-	fmt.Println(user)
-	fmt.Println(pw)
+	host := c.SMTPHost
+	user := c.SMTPUser
+	pw := c.SMTPPassword
+	host = "smtp-relay.sendinblue.com"
+	user = "andreas.olof.hansson@gmail.com"
+	pw = "shYZSJ5mp1cLg4n2"
 	return &SendingblueRepository{
 		host:     host,
 		user:     user,
