@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/smtp"
 
+	"github.com/andreashanson/dreamdata/pkg/config"
 	"github.com/andreashanson/dreamdata/pkg/mail"
 )
 
@@ -14,12 +15,12 @@ type SendingblueRepository struct {
 	password string
 }
 
-func NewSendinBlueRepo(user string, host string, password string) *SendingblueRepository {
+func NewSendinBlueRepo(c *config.SMTPConfig) *SendingblueRepository {
 
 	return &SendingblueRepository{
-		host:     host,
-		user:     user,
-		password: password,
+		host:     c.SMTPHost,
+		user:     c.SMTPUser,
+		password: c.SMTPPassword,
 	}
 }
 

@@ -1,8 +1,7 @@
 package mailjet
 
 import (
-	"fmt"
-
+	"github.com/andreashanson/dreamdata/pkg/config"
 	"github.com/andreashanson/dreamdata/pkg/mail"
 	"github.com/mailjet/mailjet-apiv3-go"
 )
@@ -11,8 +10,8 @@ type MailRepository struct {
 	Client *mailjet.Client
 }
 
-func NewMailRepo() *MailRepository {
-	client := mailjet.NewMailjetClient("e7607096ff679c66e4b8fd1a8bac9766", "95b213f8754a237524cb8a747ffc7cab")
+func NewMailRepo(c *config.MailjetConfig) *MailRepository {
+	client := mailjet.NewMailjetClient(c.Key1, c.Key2)
 	return &MailRepository{
 		Client: client,
 	}
@@ -29,8 +28,5 @@ func (mr *MailRepository) Send(e mail.Email) (mail.Email, error) {
 
 	_, err := mr.Client.SendMail(msg)
 
-	if err != nil {
-		fmt.Println(err)
-	}
-	return e, nil
+	return e, err
 }

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/andreashanson/dreamdata/pkg/config"
 	"github.com/andreashanson/dreamdata/pkg/mail"
 
 	mailjet "github.com/andreashanson/dreamdata/pkg/mailjet"
@@ -17,13 +18,14 @@ func SendMailHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:80")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	mailjetRepo := mailjet.NewMailRepo()
-	mailSrv := mail.NewService(mailjetRepo)
-	user := "andreas.olof.hansson@gmail.com"
-	host := "smtp-relay.sendinblue.com"
-	password := "shYZSJ5mp1cLg4n2"
+	config := config.NewConfig()
+	smtpConfig := config.SMTPConfig
+	mailjetConfig := config.MailjetConfig
 
-	sendinblueRepo := sendinblue.NewSendinBlueRepo(user, host, password)
+	mailjetRepo := mailjet.NewMailRepo(&mailjetConfig)
+	mailSrv := mail.NewService(mailjetRepo)
+
+	sendinblueRepo := sendinblue.NewSendinBlueRepo(&smtpConfig)
 	mailSrv2 := mail.NewService(sendinblueRepo)
 
 	var e mail.Email
@@ -34,13 +36,15 @@ func SendMailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = mailSrv2.Send(e)
+	_, err = mailSrv.Send(e)
 	if err != nil {
-		fmt.Println("Could not send with smtp mail service.")
-		fmt.Println("Try and send with another mailservice.")
-		_, err = mailSrv.Send(e)
+		fmt.Println("Error first mail service: ", err)
+		fmt.Println("Could not send with first mail service.")
+		fmt.Println("Try and send with second mail service.")
+		_, err = mailSrv2.Send(e)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("Could not send with second mail service")
+			fmt.Println("Error second mail service: ", err)
 			w.WriteHeader(500)
 			return
 		}
