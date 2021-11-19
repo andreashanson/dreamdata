@@ -26,7 +26,7 @@ RUN npm install react-scripts@3.4.1 -g --silent
 COPY . ./
 RUN npm run build
 
-# Build go image
+# Build application image
 FROM alpine:3
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

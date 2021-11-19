@@ -1,40 +1,60 @@
 package sendinblue
 
 import (
-	"log"
+	"encoding/base64"
+	"fmt"
 	"net/smtp"
 
 	"github.com/andreashanson/dreamdata/pkg/mail"
 )
 
 type SendingblueRepository struct {
-	auth *smtp.Auth
+	host     string
+	user     string
+	password string
 }
 
-func NewSendinBlueRepo() *SendingblueRepository {
-	pw := "shYZSJ5mp1cLg4n2"
-
-	auth := smtp.PlainAuth("", "andreas.olof.hansson@gmail.com", pw, "smtp-relay.sendinblue.com")
+func NewSendinBlueRepo(user string, host string, password string) *SendingblueRepository {
 
 	return &SendingblueRepository{
-		auth: &auth,
+		host:     host,
+		user:     user,
+		password: password,
 	}
 }
 
 func (sbr SendingblueRepository) Send(e mail.Email) (mail.Email, error) {
 
-	// Set up authentication information.
+	auth := smtp.PlainAuth(
+		"",
+		sbr.user,
+		sbr.password,
+		sbr.host,
+	)
 
-	// Connect to the server, authenticate, set the sender and recipient,
-	// and send the email all in one step.
-	to := []string{e.To}
-	msg := []byte("To: recipient@example.net\r\n" +
-		"Subject: discount Gophers!\r\n" +
-		"\r\n" +
-		"This is the email body.\r\n")
-	err := smtp.SendMail("smtp-relay.sendinblue.com:587", *sbr.auth, e.From, to, msg)
-	if err != nil {
-		log.Fatal(err)
+	header := make(map[string]string)
+	header["From"] = sbr.user
+	header["To"] = e.To
+	header["Subject"] = e.Subject
+	header["MIME-Version"] = "1.0"
+	header["Content-Type"] = "text/plain; charset=\"utf-8\""
+	header["Content-Transfer-Encoding"] = "base64"
+
+	body := e.Content
+
+	message := ""
+	for k, v := range header {
+		message += fmt.Sprintf("%s: %s\r\n", k, v)
 	}
-	return e, nil
+	message += "\r\n" + base64.StdEncoding.EncodeToString([]byte(body))
+
+	err := smtp.SendMail(
+		sbr.host+":587",
+		auth,
+		sbr.user,
+		[]string{e.To},
+		[]byte(message),
+	)
+
+	return e, err
 }

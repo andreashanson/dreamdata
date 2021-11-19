@@ -55,7 +55,6 @@ class FormSubmission extends React.Component {
             })
             .then((data) => {
                 this.setState({to: '', from_name: '', subject: '', content: '', mail_status: 'Email sent'})
-                console.log(data)
             })
             .catch(err => console.log(err))
         }

@@ -1,15 +1,9 @@
 # For this you need to have docker installed on you computer.
 
-# Build docker image
-make docker_build
-
 # Run dreamdata image in container
 make docker_run
 
-# To run without docker you need to have npm installed and Go installed on you computer.
+# Use application when container is running.
+Go to http://localhost:8000 
+Enter stuff in form and press send.
 
-# Run go backend
-make run_backend
-
-# Run react frontend
-make run_frontend

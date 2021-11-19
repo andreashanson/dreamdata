@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/andreashanson/dreamdata/pkg/mail"
+
 	mailjet "github.com/andreashanson/dreamdata/pkg/mailjet"
 	"github.com/andreashanson/dreamdata/pkg/sendinblue"
 )
@@ -18,8 +19,11 @@ func SendMailHandler(w http.ResponseWriter, r *http.Request) {
 
 	mailjetRepo := mailjet.NewMailRepo()
 	mailSrv := mail.NewService(mailjetRepo)
+	user := "andreas.olof.hansson@gmail.com"
+	host := "smtp-relay.sendinblue.com"
+	password := "shYZSJ5mp1cLg4n2"
 
-	sendinblueRepo := sendinblue.NewSendinBlueRepo()
+	sendinblueRepo := sendinblue.NewSendinBlueRepo(user, host, password)
 	mailSrv2 := mail.NewService(sendinblueRepo)
 
 	var e mail.Email
@@ -32,6 +36,8 @@ func SendMailHandler(w http.ResponseWriter, r *http.Request) {
 
 	_, err = mailSrv2.Send(e)
 	if err != nil {
+		fmt.Println("Could not send with smtp mail service.")
+		fmt.Println("Try and send with another mailservice.")
 		_, err = mailSrv.Send(e)
 		if err != nil {
 			fmt.Println(err)
@@ -43,7 +49,6 @@ func SendMailHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
 }
 
 func ServeReactApp(w http.ResponseWriter, r *http.Request) {
