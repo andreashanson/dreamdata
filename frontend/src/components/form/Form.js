@@ -55,8 +55,15 @@ class FormSubmission extends React.Component {
             })
             .then((data) => {
                 this.setState({to: '', from_name: '', subject: '', content: '', mail_status: 'Email sent'})
+                setTimeout(() => { 
+                    this.setState({mail_status: ""})
+                }, 3000);
+
             })
-            .catch(err => console.log(err))
+            .catch((err) => {
+                console.log(err)
+                this.setState({mail_status: "Something went wrong with sending your email..."})
+            })
         }
     
     buttonStyle = () => {
