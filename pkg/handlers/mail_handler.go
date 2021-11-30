@@ -6,27 +6,25 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/andreashanson/dreamdata/pkg/config"
 	"github.com/andreashanson/dreamdata/pkg/mail"
-
-	mailjet "github.com/andreashanson/dreamdata/pkg/mailjet"
-	"github.com/andreashanson/dreamdata/pkg/sendinblue"
 )
 
-func SendMailHandler(w http.ResponseWriter, r *http.Request) {
+type HandlersRepo struct {
+	MailSrv1 *mail.Service
+	MailSrv2 *mail.Service
+}
+
+func NewHandlersRepo(m1 *mail.Service, m2 *mail.Service) *HandlersRepo {
+	return &HandlersRepo{
+		MailSrv1: m1,
+		MailSrv2: m2,
+	}
+}
+
+func (h *HandlersRepo) SendMailHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:80")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-	config := config.NewConfig()
-	smtpConfig := config.SMTPConfig
-	mailjetConfig := config.MailjetConfig
-
-	mailjetRepo := mailjet.NewMailjetRepo(mailjetConfig)
-	mailSrv := mail.NewService(mailjetRepo)
-
-	sendinblueRepo := sendinblue.NewSendinBlueRepo(smtpConfig)
-	mailSrv2 := mail.NewService(sendinblueRepo)
 
 	var e mail.Email
 	err := json.NewDecoder(r.Body).Decode(&e)
@@ -36,12 +34,12 @@ func SendMailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = mailSrv.Send(e)
+	_, err = h.MailSrv1.Send(e)
 	if err != nil {
 		fmt.Println("Error first mail service: ", err)
 		fmt.Println("Could not send with first mail service.")
 		fmt.Println("Try and send with second mail service.")
-		_, err = mailSrv2.Send(e)
+		_, err = h.MailSrv2.Send(e)
 		if err != nil {
 			fmt.Println("Could not send with second mail service")
 			fmt.Println("Error second mail service: ", err)
