@@ -10,7 +10,7 @@ type MailRepository struct {
 	Client *mailjet.Client
 }
 
-func NewMailRepo(c *config.MailjetConfig) *MailRepository {
+func NewMailjetRepo(c *config.MailjetConfig) *MailRepository {
 	client := mailjet.NewMailjetClient(c.Key1, c.Key2)
 	return &MailRepository{
 		Client: client,

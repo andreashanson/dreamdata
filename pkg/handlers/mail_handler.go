@@ -22,7 +22,7 @@ func SendMailHandler(w http.ResponseWriter, r *http.Request) {
 	smtpConfig := config.SMTPConfig
 	mailjetConfig := config.MailjetConfig
 
-	mailjetRepo := mailjet.NewMailRepo(mailjetConfig)
+	mailjetRepo := mailjet.NewMailjetRepo(mailjetConfig)
 	mailSrv := mail.NewService(mailjetRepo)
 
 	sendinblueRepo := sendinblue.NewSendinBlueRepo(smtpConfig)
