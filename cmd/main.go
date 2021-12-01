@@ -16,7 +16,6 @@ func main() {
 
 	cfg := config.NewConfig()
 
-	fmt.Println(cfg.MailjetConfig)
 	mailjetConfig := cfg.MailjetConfig
 	sendinblueConfig := cfg.SMTPConfig
 
