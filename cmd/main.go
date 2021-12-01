@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/andreashanson/dreamdata/pkg/config"
 	"github.com/andreashanson/dreamdata/pkg/handlers"
@@ -10,11 +9,14 @@ import (
 	"github.com/andreashanson/dreamdata/pkg/mailjet"
 	"github.com/andreashanson/dreamdata/pkg/routes"
 	"github.com/andreashanson/dreamdata/pkg/sendinblue"
+	"github.com/andreashanson/dreamdata/pkg/server"
 )
 
 func main() {
 
 	cfg := config.NewConfig()
+
+	fmt.Println(cfg.MailjetConfig)
 	mailjetConfig := cfg.MailjetConfig
 	sendinblueConfig := cfg.SMTPConfig
 
@@ -26,14 +28,11 @@ func main() {
 
 	handlerRepo := handlers.NewHandlersRepo(mailSrv1, mailSrv2)
 
-	newRoutes := routes.GetRoutes(handlerRepo)
+	r := routes.GetRoutes(handlerRepo)
 
-	srv := &http.Server{
-		Addr:    ":8000",
-		Handler: newRoutes,
-	}
+	srv := server.NewServer(":8000", r)
 
-	err := srv.ListenAndServe()
+	err := srv.Run()
 	if err != nil {
 		fmt.Println(err)
 	}
